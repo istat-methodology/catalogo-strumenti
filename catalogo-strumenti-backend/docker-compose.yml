@@ -1,0 +1,65 @@
+version: '3'
+services:
+  catalogo-api-gateway:
+    image: mecdcme/catalog-api-gateway:latest
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/catalog?useSSL=false&useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=com.mysql.cj.jdbc.Driver
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - SPRING_DATASOURCE_HIKARI_MINIMUM-IDLE=1
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM-POOL-SIZE=3
+      - ZUUL_ROUTES_SERVICE_CATALOGUE_URL=http://catalog-service:8081/catalog
+    depends_on:
+      - db
+    restart: always
+  catalogo-service:
+    image: mecdcme/catalog-service:latest
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    ports:
+      - 8081:8081
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/catalog?useSSL=false&useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=com.mysql.cj.jdbc.Driver
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - SPRING_DATASOURCE_HIKARI_MINIMUM-IDLE=1
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM-POOL-SIZE=3
+      - EUREKA_CLIENT_INSTANCE_HOSTNAME=eureka-server
+      - EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://catalog-api-gateway:8080/eureka
+    depends_on:
+      - db
+    restart: always
+  db:
+   image: mysql:latest
+   command: ["--innodb_use_native_aio=0","--default-authentication-plugin=mysql_native_password","--lower_case_table_names=1"]
+   volumes:
+      - ./catalogo-backend-service/db/catalogo-create-mysql.sql:/docker-entrypoint-initdb.d/create-db-1.sql
+      - ./catalogo-backend-service/db/catalogo-init.sql:/docker-entrypoint-initdb.d/init-db-1.sql
+      - ./catalogo-backend-service/db/catalogo-data.sql:/docker-entrypoint-initdb.d/init-db-2.sql
+      - ./catalogo-api-gateway/db/catalogo-api-gateway-create-mysql.sql:/docker-entrypoint-initdb.d/create-db-2.sql
+      - db-data:/var/lib/mysql
+   restart: always
+   environment:
+    MYSQL_ROOT_PASSWORD: root
+   ports:
+    - 3306:3306
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 9083:8080
+volumes:
+  db-data: 
+
