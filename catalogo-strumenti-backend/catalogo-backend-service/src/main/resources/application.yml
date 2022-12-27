@@ -25,7 +25,7 @@ spring:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
 server:
-  port: 9081
+  port: 8081
 
 eureka:
   client:
