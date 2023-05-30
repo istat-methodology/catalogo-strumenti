@@ -47,7 +47,7 @@ class BusinessFunctionsService extends AbstractService {
         console.log(error);
       });
   }
-  findBFunctionsByBService(id) {
+  findBFunctionsByBService(id) {    
     return axiosCatalog
       .get(this.endpoint + "/business-service/" + id)
       .then(res => {
@@ -59,8 +59,19 @@ class BusinessFunctionsService extends AbstractService {
         throw err;
       });
   }
+  addProcess(fID, pID) {
 
-  removeBProcess(fID, pID) {
+    return axiosCatalog
+      .put(this.endpoint + "/" + fID + "/processes/" + pID)
+      .then(res => {
+        var data = res.data ? res.data : [];
+        return data;
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
+  removeProcess(fID, pID) {
     return axiosCatalog
       .delete(this.endpoint + "/" + fID + "/processes/" + pID)
       .then(res => {

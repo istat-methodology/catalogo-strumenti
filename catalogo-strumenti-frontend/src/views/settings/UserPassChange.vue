@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-sm-6 col-md-6">
-      <div class="card ">
+      <div class="card">
         <div class="card-body" v-if="user">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -121,9 +121,7 @@
             <p class="typo__p" v-if="submitStatus === 'ERROR'">
               Please fill the form correctly.
             </p>
-            <p class="typo__p" v-if="submitStatus === 'PENDING'">
-              Sending...
-            </p>
+            <p class="typo__p" v-if="submitStatus === 'PENDING'">Sending...</p>
           </div>
         </div>
       </div>

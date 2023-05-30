@@ -8,14 +8,14 @@
               <div class="card-body text-center">
                 <div class="mt-2">
                   <h2 class="text-white">Tools-Catalog</h2>
-                  <p style="margin-bottom:5rem">
+                  <p style="margin-bottom: 5rem">
                     Benvenuti nell'applicazione Tools-Catalog. <br />
                     Un catalogo di strumenti per la produzione Statistica.
                   </p>
                   <p class="mb-0">
                     Il progetto è open-source, il codice sorgente è disponibile
                     <a
-                      style="color:white"
+                      style="color: white"
                       href="https://github.com/istat-methodology/Tools-Catalog-frontend"
                       target="_blank"
                       >@github</a

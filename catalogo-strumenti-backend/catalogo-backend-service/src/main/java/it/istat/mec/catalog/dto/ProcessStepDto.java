@@ -12,7 +12,8 @@ public class ProcessStepDto extends BaseDto  implements Serializable  {
 	private String descr;		
 	private String label;	
 	private BusinessServiceMiniDto businessService;	
+	private List<BusinessProcessMiniDto2> businessProcesses;
 	private String substep;	
 	private List<StepInstanceDto> stepInstances;
- 	private List<ProcessDesignDto> processDesigns;
+ 	private List<ProcessDesignMiniDto> processDesigns;
 }

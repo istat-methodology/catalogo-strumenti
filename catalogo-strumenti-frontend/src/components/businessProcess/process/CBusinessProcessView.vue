@@ -1,67 +1,65 @@
 <template>
   <div>
-    <div v-if="bProcessLocal">
-      <CCard>
-        <CCardBody>
-          <div class="row">
-            <CInput
-              class="col-6"
-              label="Nome*"
-              placeholder="Nome"
-              v-model="bProcessLocal.name"
-            />
-            <CInput
-              class="col-4"
-              label="Etichetta"
-              placeholder="Etichetta"
-              v-model="bProcessLocal.label"
-            />
-            <CInput
-              class="col-2"
-              label="Ordine"
-              type="number"
-              placeholder="Ordine"
-              v-model="bProcessLocal.orderCode"
-            />
+    
+    <CTitle
+      :title="lProcess.name"
+      :buttonTitle="lProcess.name"
+      functionality="DETTAGLIO PROCESSO"
+      :authenticated="isAuthenticated"
+      :buttons="['indietro']"
+      @handleBack="handleBack"
+    />
+    <div v-if="lProcess">
+      <div class="row p-2">
+        <div class="card col p-3">
+          <span class="p-2"><strong>Etichetta</strong></span>
+          <div class="card-slot pl-2">
+            <span>
+              {{ lProcess.label }}
+            </span>
           </div>
-          <div class="row mt-4">
-            <CTextarea
-              class="col-12"
-              label="Descrizione"
-              placeholder="Descrizione"
-              v-model="bProcessLocal.descr"              
-            />
+        </div>
+        <div class="card col-1 p-3">
+          <span class="p-2"><strong>Ordine</strong></span>
+          <div class="card-slot pl-2">
+            <span>
+              {{ lProcess.orderCode }}
+            </span>
           </div>
-        </CCardBody>
-      </CCard>
+        </div>
+        <div class="card col-8 p-3">
+          <span class="p-2"><strong>Descrizione</strong></span>
+          <div class="card-slot pl-2 pb-2">
+            <span>
+              {{ lProcess.descr }}
+            </span>
+          </div>
+        </div>
+      </div>
 
-      <!--CTitle
+      <CTitle
         title="Passi"
         buttonTitle=" Passo"
         functionality=""
         :authenticated="isAuthenticated"
-        :buttons="['aggiungi']"
-        @handleNew="handleNewStep"
       />
       <CCard>
         <CCardBody>
           <span
-            v-if="
-              bProcessLocal.processSteps &&
-              bProcessLocal.processSteps.length > 0
-            "
+            v-if="lProcess.processSteps && lProcess.processSteps.length > 0"
           >
             <CDataTable
-              v-if="bProcessLocal"
+              v-if="lProcess"
               :items="getProcessStepsList()"
               :fields="fields"
               :items-per-page="10"
               hover
               pagination
-              ><template #show_details="{ item }">
+            >
+              <template #show_details="{ item }">
                 <td>
-                  <span class="icon-link" @click="handleEditStep(item)"
-                    ><edit-icon title="Edit"
+                  <span class="icon-link" @click="handleShowStep(item)"
+                    ><view-icon title="view"
                   /></span>
                 </td>
               </template>
@@ -69,123 +67,100 @@
           </span>
           <span v-else>Non sono presenti passi</span>
         </CCardBody>
-      </CCard-->
+      </CCard>
     </div>
-
-
   </div>
 </template>
 <script>
 import { mapGetters } from "vuex";
-//import CBusinessProcessDesignNew from "@/components/businessProcess/CBusinessProcessDesignNew";
-//import CTitle from "@/components/CTitle.vue";
+import CTitle from "@/components/CTitle.vue";
 export default {
-  name: "CBusinessProcessEdit",
+  name: "CBusinessProcessView",
   components: {
-  //  CBusinessProcessDesignNew,
-  //  CTitle,
- // CModalDelete
+    CTitle
   },
   data() {
     return {
       fields: [
         {
-          key: "index",
-          label: "#",
-          _style: "width:1%;",
-        },        
-        {
           key: "name",
           label: "Nome",
-          _style: "width:20%;",
+          _style: "width:20%;"
         },
         {
           key: "label",
           label: "etichetta",
-          _style: "width:40%;",
+          _style: "width:40%;"
         },
         {
-          key: "description",
+          key: "descr",
           label: "Descrizione",
-          _style: "width:40%;",
+          _style: "width:40%;"
         },
-        /*
-        {
-          key: "stepInstances",
-          label: "Funzione",
-          _style: "width:40%;",
-        },
-        */
         {
           key: "show_details",
           label: "",
           _style: "width:1%",
           sorter: false,
-          filter: false,
-        },
+          filter: false
+        }
       ],
-      bProcessLocal: {},
+      lProcess: {},
       states: [],
       FormState: {},
       stateform: 0,
-      warningModal: false,
+      warningModal: false
     };
   },
   computed: {
-    ...mapGetters("auth", ["isAuthenticated"]),
+    ...mapGetters("auth", ["isAuthenticated"])
   },
-  emits: ["enableEditStep", "enableNewStep"],
-
   props: {
-    bProcess: {
+    pProcess: {
       type: Object,
       required: true,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
   methods: {
-    /*
-    getProcessStepsList: function () {
-      if (this.bProcessLocal && this.bProcessLocal.processSteps) {
-        return this.bProcessLocal.processSteps.map((step, index) => {
+    getProcessStepsList: function() {
+      if (this.lProcess && this.lProcess.processSteps) {
+        return this.lProcess.processSteps.map(step => {
           return {
             id: step.id,
-            index: index + 1,
             name: step.name == null ? "" : step.name,
             label: step.label == null ? "" : step.label,
-            description:step.descr == null ? "" : step.descr,
+            descr: step.descr == null ? "" : step.descr,
             //tool: step.businessService == null ? "" : step.businessService.name,
             stepInstances:
               step.stepInstances == null
                 ? ""
                 : step.stepInstances
-                    .map((instance) => {
+                    .map(instance => {
                       return (
                         instance.functionality + " (" + instance.method + ")"
                       );
                     })
                     .join(", "),
-            processDesigns: step.processDesigns,
+            processDesigns: step.processDesigns
           };
         });
       } else {
         return [];
       }
     },
-    */
-    handleEditStep(step) {
-      this.$emit("enableEditStep", step);
-    },
-    handleNewStep() {
-      this.$emit("enableNewStep");
-    },
     handleBack() {
-      this.$router.back();
+      this.$emit("enableBack");
     },
+
+    handleShowStep(step) {
+      this.$emit("enableShowStep", step);
+    }
   },
+
   created() {
-    this.bProcessLocal = this.bProcess;
-  },
+    this.lProcess = this.pProcess;
+  }
 };
 </script>
 <style scoped>

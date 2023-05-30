@@ -17,6 +17,7 @@
             :items="getBusinessFunctionList"
             :fields="fields"
             column-filter
+            :columnFilterValue="columnFilterValue"
             :items-per-page="10"
             sorter
             hover
@@ -56,8 +57,13 @@ export default {
       fields: [
         {
           key: "id",
-          label: "Identificativo",
-          _style: "width:10%;"
+          label: "ID",
+          _style: "width:4%;"
+        },
+        {
+          key: "gsbpm",
+          label: "Gsbpm",
+          _style: "width:40%;"
         },
         {
           key: "name",
@@ -70,11 +76,6 @@ export default {
           _style: "width:10%;"
         },
         {
-          key: "gsbpm",
-          label: "Gsbpm",
-          _style: "width:40%;"
-        },
-        {
           key: "show_details",
           label: "",
           _style: "width:1%",
@@ -82,8 +83,9 @@ export default {
           filter: false
         }
       ],
-      selectedBusiness: {},
-      showModal: false
+      selectedBusinessFunction: {},
+      showModal: false,
+      columnFilterValue: {}
     };
   },
   computed: {
@@ -114,24 +116,26 @@ export default {
       }
     }
   },
-
+  mounted() {
+    if (this.$route.params.gsbpm) {
+      this.columnFilterValue = {
+        gsbpm: this.$route.params.gsbpm.code
+      };
+    }
+  },
   methods: {
-    deleteBusiness() {
-      this.$store
-        .dispatch("bFunction/delete", this.selectedBusiness.id)
-        .catch(() => {});
-      this.showModal = false;
-    },
     handleOpenModalDelete(app) {
-      this.selectedBusiness = app;
+      this.selectedBusinessFunction = app;
       this.showModal = true;
     },
-
     handleNew() {
       this.$router.push({ name: "BusinessFunctionsAdd" });
     },
     handleBack() {
-      this.$router.push({ name: "Catalogue" });
+      this.$router.push({
+        name: "Catalogue",
+        params: { cataloguePage: "2", gsbpm: this.$route.params.gsbpm }
+      });
     },
     handleView(item) {
       this.$router.push({
@@ -146,10 +150,10 @@ export default {
       });
     },
     handleDelete() {
-      /**this.$store
-      .dispatch("bFunction/delete", this.selectedBusiness.id)
-      .catch(() => {});
-      */
+      //this.$store.dispatch("bFunction/delete", this.selectedBusinessFunction.id).catch(() => {});
+      //this.$store.dispatch("bFunction/filter", this.params).catch(() => {});
+      //this.$store.dispatch("bFunction/findAll");
+
       this.showModal = false;
     },
     closeModal() {
@@ -157,20 +161,16 @@ export default {
     },
     getMessage() {
       return (
-        "Sei sicuro di eliminare il processo: " +
-        this.selectedBusiness.name +
-        " selezionato?"
+        "Sei sicuro di eliminare la Business Function: " +
+        this.selectedBusinessFunction.name +
+        " selezionata?"
       );
     }
   },
   created() {
-    this.$store
-      .dispatch("coreui/setContext", Context.BusinessFunctionSession)
-      .catch(() => {});
-    // if (this.params) {
-    this.$store.dispatch("bFunction/filter", this.params).catch(() => {});
-    //this.$store.dispatch("business/findAll");
-    // }
+    this.$store.dispatch("coreui/setContext", Context.BusinessFunctionSession);
+    //this.$store.dispatch("bFunction/filter", this.params).catch(() => {});
+    this.$store.dispatch("bFunction/findAll");
   }
 };
 </script>

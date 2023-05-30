@@ -1,14 +1,18 @@
 package it.istat.mec.catalog.service;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import it.istat.mec.catalog.dao.BusinessProcessDao;
 import it.istat.mec.catalog.dao.BusinessServiceDao;
 import it.istat.mec.catalog.dao.ProcessStepDao;
 import it.istat.mec.catalog.dao.StepInstanceDao;
+import it.istat.mec.catalog.domain.BusinessProcess;
 import it.istat.mec.catalog.domain.BusinessService;
+import it.istat.mec.catalog.domain.GsbpmProcess;
 import it.istat.mec.catalog.domain.ProcessStep;
 import it.istat.mec.catalog.domain.StepInstance;
 import it.istat.mec.catalog.dto.ProcessStepDto;
@@ -26,6 +30,8 @@ public class ProcessStepService {
 	StepInstanceDao stepInstanceDao;
 	@Autowired
 	BusinessServiceDao businessServiceDao;
+	@Autowired
+	BusinessProcessDao businessProcessDao;
 
 	public List<ProcessStepDto> findAllProcessSteps() {
 		
@@ -36,6 +42,29 @@ public class ProcessStepService {
 	public ProcessStepDto newProcessStep(CreateProcessStepRequest request) {
 		ProcessStep ps = new ProcessStep();
 		ps = Translators.translate(request);		
+		ps.setBusinessService(businessServiceDao.getOne(request.getBusinessServiceId()));	
+		
+		// Test: provo ad aggiungere un businessProcess allo step
+		List<BusinessProcess> listaBs = new ArrayList<BusinessProcess>();		
+			
+		if(request.getProcessIds()!=null) {
+			for(int i=0; i<request.getProcessIds().length; i++) {
+							
+				listaBs.add(businessProcessDao.getOne(request.getProcessIds()[i]));
+				
+			}
+		}
+		ps.setBusinessProcesses(listaBs);		
+		
+		processStepDao.save(ps);
+		return Translators.translate(ps);
+	}
+	
+	public ProcessStepDto newBasicProcessStep(CreateProcessStepRequest request) {
+		ProcessStep ps = new ProcessStep();
+		ps = Translators.translate(request);		
+		ps.setBusinessService(businessServiceDao.getOne(request.getBusinessServiceId()));	
+			
 		processStepDao.save(ps);
 		return Translators.translate(ps);
 	}
@@ -51,32 +80,53 @@ public class ProcessStepService {
 		
 		if (!processStepDao.findById(request.getId()).isPresent())
 			throw new NoDataException("ProcessStep not present");
+		ProcessStep ps = processStepDao.getOne(request.getId());
 		
-		ProcessStep ps = processStepDao.findById(request.getId()).get();	
+		BusinessService	bs = ps.getBusinessService();
 		
-		// paolinux 21-12-2022 sistemazione eccezione nell'update della foreign key (prendo il servizio associato alla nuova id se esistente e lo piazzo nella ps)
-		Optional<BusinessService> bs = businessServiceDao.findById(request.getBusinessServiceId());
+		ps = Translators.translateUpdate(request, ps);
+		// Reimposto il businessService col vecchio valore - NON FUNZIONA
 		
-		if (!bs.isPresent()) {
-			// se invece non esiste o è null, inserisco il servizio base for dummy 
-			bs = businessServiceDao.findById(999);
-			request.setBusinessServiceId(999);
+		ps.setBusinessService(bs);
+		
+		// Nota: Dallo step non mi consente di cambiare l'id del service associato. È giusto?
+//		BusinessService bs = businessServiceDao.getOne(request.getBusinessServiceId());
+//		if ( businessServiceDao.existsById(bs.getId()) && request.getBusinessServiceId() != bs.getId() ) 
+//		{
+//			ps.setBusinessService(bs);
+//		}
+		
+		List<BusinessProcess> listaBp = new ArrayList<BusinessProcess>();		
+		
+		BusinessProcess bp = null;
+		if(request.getProcessIds()!=null) {
+			for(int i=0; i<request.getProcessIds().length; i++)				
+				bp = businessProcessDao.getOne(request.getProcessIds()[i]);
+			listaBp.remove(bp);				
+		}
+		if(request.getProcessIds()!=null) {
+			for(int i=0; i<request.getProcessIds().length; i++)
+				listaBp.add(businessProcessDao.getOne(request.getProcessIds()[i]));
 		}
 		
-		ps.setBusinessService(bs.get());
-		ps = Translators.translateUpdate(request, ps);
+		ps.setBusinessProcesses(listaBp);		
 		
 		processStepDao.save(ps);		
 		
 		return Translators.translate(ps);
 	}
 	
-	public ProcessStepDto deleteProcessStep(Integer id) {		
-		if (!processStepDao.findById(id).isPresent())
+	public Boolean deleteProcessStep(Integer idStep, Integer idProcess) {		
+		if (!processStepDao.findById(idStep).isPresent())
 			throw new NoDataException("ProcessStep not present");
-			ProcessStep ps = processStepDao.findById(id).get();
-			processStepDao.delete(ps);
-			return Translators.translate(ps);		
+			ProcessStep ps = processStepDao.findById(idStep).get();
+			// TEST: verficare
+			BusinessProcess bp = businessProcessDao.getOne(idProcess);
+			ps.getBusinessProcesses().remove(bp);			
+			
+			//processStepDao.delete(ps);
+			processStepDao.save(ps);	
+			return Boolean.TRUE;			
 	}
 	
 	public ProcessStepDto addStepInstanceToProcessStep(Integer id_process_step, Integer id_step_instance) {

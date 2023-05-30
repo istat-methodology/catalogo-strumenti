@@ -20,14 +20,15 @@
           :class="{ 'c-active': isHome }"
         >
           <CIcon name="cil-home" class="c-sidebar-nav-icon" />Home
-          <span class="badge badge-primary p-0 pt-2 pl-2 pr-2"><h6>V. 1.0</h6></span>
+          <span class="badge badge-primary p-0 pt-2 pl-2 pr-2"
+            ><h6>V. 1.5.0</h6></span
+          >
         </router-link>
       </li>
-
       <li class="c-sidebar-nav-item" v-if="isHome || isToolSession">
         <router-link
           tag="a"
-          :to="{ name: 'ToolList' }"
+          :to="{ name: 'ToolList', params: { gsbpm: '' } }"
           class="c-sidebar-nav-link"
           :class="{ 'c-active': isToolSession }"
         >
@@ -38,7 +39,7 @@
       <li class="c-sidebar-nav-item" v-if="isToolSession">
         <router-link
           tag="a"
-          :to="{ name: 'MethodList' }"
+          :to="{ name: 'MethodList', params: { gsbpm: '' } }"
           class="c-sidebar-nav-link"
           :class="{ 'c-active': isMethodsList }"
         >
@@ -69,7 +70,7 @@
       <li class="c-sidebar-nav-item" v-if="isHome || isBusinessFunctionSession">
         <router-link
           tag="a"
-          :to="{ name: 'BusinessFunctionsList' }"
+          :to="{ name: 'BusinessFunctionsList', params: { gsbpm: '' } }"
           class="c-sidebar-nav-link c-sidebar-navlink"
           :class="{ 'c-active': isBusinessFunctionSession }"
         >
@@ -81,14 +82,23 @@
       <li class="c-sidebar-nav-item" v-if="isBusinessFunctionSession">
         <router-link
           tag="a"
-          :to="{ name: 'BusinessProcessList' }"
+          :to="{ name: 'BusinessProcessList', params: { gsbpm: '' } }"
           class="c-sidebar-nav-link c-sidebar-navlink"
           :class="{ 'c-active': isBusinessProcessSession }"
         >
           <CIcon name="cil-chart" class="c-sidebar-nav-icon" />Processi
         </router-link>
       </li>
-
+      <!--li class="c-sidebar-nav-item" v-if="isBusinessFunctionSession">
+        <router-link
+          tag="a"
+          :to="{ name: 'ProcessStepsList' }"
+          class="c-sidebar-nav-link c-sidebar-navlink"
+          :class="{ 'c-active': isBusinessProcessSession }"
+        >
+          <CIcon name="cil-chart" class="c-sidebar-nav-icon" />Passi
+        </router-link>
+      </li-->
       <!-- <li class="c-sidebar-nav-title" v-if="isToolList">
         Classificazione GSBPM
       </li>

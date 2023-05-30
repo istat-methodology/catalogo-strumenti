@@ -5,7 +5,7 @@
       <div>
         <div class="p-2">
           <CTitle
-            :title="bFunction.name"
+            :title="'(' + bFunction.label + ') ' + bFunction.name"
             :buttonTitle="bFunction.name"
             functionality="Dettaglio"
             :authenticated="isAuthenticated"
@@ -13,45 +13,36 @@
             @handleEdit="handleEdit(bFunction)"
             @handleBack="handleBack"
           />
-          <div class="pl-2">
-            <div class="columns">
-              <div class="row">
-                <div class="description-fields col-12">
-                  {{ bFunction.descr | dashEmpty }}
-                </div>
-                <div class="card col-md-auto p-2">
-                  <span><strong>Fasi GSBPM</strong></span>
-                  <div class="card-slot p-2">
-                    {{
-                      bFunction.gsbpmProcesses
-                        .map(gsbpmProcess => {
-                          return gsbpmProcess.code + " " + gsbpmProcess.name;
-                        })
-                        .join(", ") | dashEmpty
-                    }}
-                  </div>
-                </div>
-
-                <div class="card col-md-auto p-2">
-                  <span><strong>Etichetta</strong></span>
-                  <div class="card-slot p-2">
-                    <span>{{ bFunction.label | dashEmpty }}</span>
-                  </div>
-                </div>
+          <div class="row p-2">
+            <div class="card col-5 p-3">
+              <span class="p-2"><strong>GSBPM</strong></span>
+              <div class="card-slot pl-2">
+                <span>
+                  {{
+                    bFunction.gsbpmProcesses
+                      .map(gsbpmProcess => {
+                        return gsbpmProcess.code + " " + gsbpmProcess.name;
+                      })
+                      .join(", ") | dashEmpty
+                  }}</span
+                >
+              </div>
+            </div>
+            <div class="card col-5 p-3">
+              <span class="p-2"><strong>Etichetta</strong></span>
+              <div class="card-slot pl-2">
+                <span> {{ bFunction.label | dashEmpty }}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div>
-        <div class="p-2">
-          <CToolsView :tools="toolsByBfunction" />
-        </div>
+      <div class="p-2">
+        <CListTools :tools="toolsByBfunction" />
       </div>
-      <div>
-        <div class="p-2">
-          <CBusinessProcessView :businessProcesses="getBusinessProcesses" />
-        </div>
+
+      <div class="p-2">
+        <CListProcess :businessProcesses="getBusinessProcesses" />
       </div>
     </div>
   </div>
@@ -60,14 +51,14 @@
 import { mapGetters } from "vuex";
 import { Context } from "@/common";
 import _ from "lodash";
-import CBusinessProcessView from "@/components/businessProcess/CBusinessProcessView";
-import CToolsView from "@/components/tools/CToolsView";
+import CListProcess from "@/components/businessFunctions/details/CListProcess.vue";
+import CListTools from "@/components/businessFunctions/details/CListTools.vue";
 import CTitle from "@/components/CTitle.vue";
 export default {
   name: "BusinessFunctionsDetails",
   components: {
-    CBusinessProcessView,
-    CToolsView,
+    CListProcess,
+    CListTools,
     CTitle
   },
   data() {

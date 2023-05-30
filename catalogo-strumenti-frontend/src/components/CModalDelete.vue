@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CModal title="Attenzione!" :show.sync="showModal">
+    <CModal title="Attenzione!" :show="showModal">
       <template #footer>
         <CButton shape="square" size="sm" color="light" @click="closeModal">
           Chiudi

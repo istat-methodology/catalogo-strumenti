@@ -48,6 +48,12 @@ public class ProcessStepController {
 		return processStepService.newProcessStep(request);
 	}
 	
+	@PostMapping("/process-steps-new-basic")
+	public ProcessStepDto createBasic(@RequestBody CreateProcessStepRequest request) {
+
+		return processStepService.newBasicProcessStep(request);
+	}
+	
 	@PutMapping(value = "/process-steps/{id}")
 	public ProcessStepDto updateProcessStep(@RequestBody CreateProcessStepRequest request) {
 		
@@ -61,10 +67,10 @@ public class ProcessStepController {
 		return processStepService.addStepInstanceToProcessStep(id_process_step, id_step_instance);
 	}
 	
-	@DeleteMapping(value = "/process-steps/{id}")
-	public ProcessStepDto deleteProcessStep(@PathVariable("id") Integer id) {
+	@DeleteMapping(value = "/process-steps/{id_step}/business-process/{id_process}")
+	public Boolean deleteProcessStep(@PathVariable("id_step") Integer idStep, @PathVariable("id_process") Integer idProcess) {
 
-		return processStepService.deleteProcessStep(id);
+		return processStepService.deleteProcessStep(idStep, idProcess);
 	}
 	
 	@DeleteMapping(value = "/process-steps/{id_process_step}/step-instance/{id_step_instance}")

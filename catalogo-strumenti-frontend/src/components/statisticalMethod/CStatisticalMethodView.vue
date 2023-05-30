@@ -6,34 +6,52 @@
     <div class="description-fields col-12">
       {{ descriptionLabel }}
     </div>
-    <div class="columns">
-      <div class="row">
-        <div v-if="statisticalMethods.length === 0">
-          <span
-            ><i><h5>Nessun metodo statitico associato</h5></i></span
-          >
-        </div>
+
+    <div class="row">
+      <div class="col-4">
         <div
-          class="card col-md-auto"
-          v-for="statisticalMethod of statisticalMethods"
-          :key="statisticalMethod.id"
+          v-for="(statisticalMethod, index) of statisticalMethods"
+          v-bind:key="statisticalMethod.id"
         >
-          <div class="card-header">
-            {{ statisticalMethod.name }}
-            <div class="card-header-actions">
-              <router-link
-                tag="a"
-                :to="{
-                  name: 'MethodDetails',
-                  params: { id: statisticalMethod.id }
-                }"
-              >
-                <view-icon />
-              </router-link>
-            </div>
+          <div class="text-info center mt-2 mb-2">
+            <h6 class="card-header no-border text-info center">
+              {{ statisticalMethod.name }}
+              <div class="card-header-actions">
+                <router-link
+                  tag="a"
+                  :to="{
+                    name: 'MethodDetails',
+                    params: { id: statisticalMethod.id }
+                  }"
+                >
+                  <view-icon />
+                </router-link>
+              </div>
+            </h6>
           </div>
-          <div class="card-body">
-            <p class="card-text">{{ statisticalMethod.description }}</p>
+
+          <div class="card">
+            <div class="card-body">
+              <span v-if="statisticalMethods.length > 0">
+                <div class="d-flex flex-wrap">
+                  <li
+                    class="list-group-item list-group-item-action p-0 p-1 border cursor-pointer"
+                  >
+                    <strong>{{ index + 1 + ")" }} </strong>
+                    {{ statisticalMethod.description }}
+                  </li>
+                </div>
+              </span>
+              <span v-else>
+                <div class="list-group">
+                  <li
+                    class="list-group-item list-group-item-action p-0 p-1 no-border cursor-pointer"
+                  >
+                    Nessun metodo statitico associato
+                  </li>
+                </div>
+              </span>
+            </div>
           </div>
         </div>
       </div>

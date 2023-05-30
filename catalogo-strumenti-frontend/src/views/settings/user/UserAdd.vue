@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-sm-6 col-md-6">
-      <div class="card ">
+      <div class="card">
         <header class="card-header">
           User
           <router-link
@@ -33,9 +33,7 @@
               v-model="name"
             />
             <div class="row col-12">
-              <div class="error" v-if="!$v.name.required">
-                Name is required
-              </div>
+              <div class="error" v-if="!$v.name.required">Name is required</div>
               <div class="error" v-if="!$v.name.minLength">
                 Name must have at least
                 {{ $v.name.$params.minLength.min }} letters.
@@ -119,9 +117,7 @@
             ></v-select>
 
             <div class="row col-12">
-              <div class="error" v-if="!$v.role.required">
-                role is required
-              </div>
+              <div class="error" v-if="!$v.role.required">role is required</div>
               <div class="error" v-if="!$v.role.minLength">
                 role must have at least
                 {{ $v.role.$params.minLength.min }} letters.
@@ -172,9 +168,7 @@
             <p class="typo__p" v-if="submitStatus === 'ERROR'">
               Please fill the form correctly.
             </p>
-            <p class="typo__p" v-if="submitStatus === 'PENDING'">
-              Sending...
-            </p>
+            <p class="typo__p" v-if="submitStatus === 'PENDING'">Sending...</p>
           </div>
         </div>
       </div>

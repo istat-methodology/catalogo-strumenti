@@ -18,12 +18,14 @@
           v-if="toolscatalog"
           :items="computedItems"
           :fields="fields"
-          column-filter
           :items-per-page="10"
+          column-filter
+          :columnFilterValue="columnFilterValue"
           sorter
           hover
           pagination
-          ><template #show_details="{ item }">
+        >
+          <template #show_details="{ item }">
             <CTableLink
               :authenticated="isAuthenticated"
               @handleView="handleView(item)"
@@ -55,6 +57,12 @@ export default {
     return {
       fields: [
         {
+          key: "gsbpm",
+          label: "Fasi Gsbpm",
+          _style: "width:30%;"
+        },
+
+        {
           key: "name",
           label: "Nome",
           _style: "width:20%;"
@@ -63,11 +71,6 @@ export default {
           key: "tooltype",
           label: "Tipologia",
           _style: "width:20%;"
-        },
-        {
-          key: "gsbpm",
-          label: "Fasi Gsbpm",
-          _style: "width:30%;"
         },
         /*
         {
@@ -90,7 +93,8 @@ export default {
         }
       ],
       selectedTool: {},
-      showModal: false
+      showModal: false,
+      columnFilterValue: {}
     };
   },
   computed: {
@@ -120,6 +124,13 @@ export default {
       }
     }
   },
+  mounted() {
+    if (this.$route.params.gsbpm) {
+      this.columnFilterValue = {
+        gsbpm: this.$route.params.gsbpm.code
+      };
+    }
+  },
   methods: {
     handleOpenModalDelete(app) {
       this.selectedTool = app;
@@ -129,7 +140,11 @@ export default {
       this.$router.push({ name: "ToolAdd" });
     },
     handleBack() {
-      this.$router.push({ name: "Catalogue" });
+      //this.$router.back();
+      this.$router.push({
+        name: "Catalogue",
+        params: { cataloguePage: "2", gsbpm: this.$route.params.gsbpm }
+      });
     },
     handleView(item) {
       this.$router.push({ name: "ToolDetails", params: { id: item.id } });
@@ -154,10 +169,7 @@ export default {
   },
   created() {
     this.$store.dispatch("coreui/setContext", Context.ToolList);
-    // if (this.params) {
-    this.$store.dispatch("tools/filter", this.params);
-    //this.$store.dispatch("tools/findAll");
-    // }
+    this.$store.dispatch("tools/findAll");
   }
 };
 </script>

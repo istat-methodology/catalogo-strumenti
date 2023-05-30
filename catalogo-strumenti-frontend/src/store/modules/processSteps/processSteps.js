@@ -2,20 +2,33 @@ import { processStepsService } from "@/services";
 import { processStepsOpenService } from "@/services";
 
 const state = {
-  procStepList: [],
-  procStep: null
+  processStepsList: [],
+  processSteps: null
 };
 
 const mutations = {
-  SET_PROCSTEPLIST(state, procStepList) {
-    state.procStepList = procStepList;
+  SET_PROCSTEPLIST(state, processStepsList) {
+    state.processStepsList = processStepsList;
   },
-  SET_PROCSTEP(state, procStep) {
-    state.procStep = procStep;
+  SET_PROCSTEP(state, processSteps) {
+    state.processSteps = processSteps;
   }
 };
 
 const actions = {
+  
+  findById({ commit }, id) {
+    return processStepsOpenService
+      .findById(id)
+      .then(data => {
+        //console.log(data);
+        commit("SET_PROCSTEP", data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
+
   findAll({ commit }) {
     processStepsOpenService.findAll().then(
       data => {
@@ -26,6 +39,7 @@ const actions = {
       }
     );
   },
+
   save({ commit, dispatch }, payload) {
     return processStepsService
       .save(payload)
@@ -39,18 +53,7 @@ const actions = {
       .catch(err => {
         console.log(err);
       });
-  },
-  findById({ commit }, id) {
-    return processStepsOpenService
-      .findById(id)
-      .then(data => {
-        //console.log(data);
-        commit("SET_PROCSTEP", data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  },
+  },  
   update({ commit, dispatch }, payload) {
     return processStepsService
       .update(payload)
@@ -59,20 +62,6 @@ const actions = {
         dispatch("message/success", "Process Step aggiornato!", {
           root: true
         });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  },
-  addToBFunction(payload) {
-    return processStepsService
-      .addToBFunction(payload)
-      .then(data => {
-        /*  commit("SET_PROCSTEP", data); */
-        console.log(data);
-        /* dispatch("message/success", "Process Step aggiornato!", {
-          root: true
-        }); */
       })
       .catch(err => {
         console.log(err);
@@ -88,19 +77,32 @@ const actions = {
       .catch(err => {
         console.log(err);
       });
+  },
+  removeStep({ commit, dispatch }, params) {
+    return processStepsService
+      .removeStep(params.idStep, params.idProcess)
+      .then(data => {
+        commit("SET_PROCSTEP", data);
+        dispatch("message/success", "Step Eliminato dal Business Process!", {
+          root: true
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 };
 
 const getters = {
-  procStep: state => {
-    return state.procStep;
+  processSteps: state => {
+    return state.processSteps;
   },
-  procStepList: state => {
-    return state.procStepList;
+  processStepsList: state => {
+    return state.processStepsList;
   }
 };
 
-export const procStep = {
+export const processSteps = {
   namespaced: true,
   state,
   mutations,

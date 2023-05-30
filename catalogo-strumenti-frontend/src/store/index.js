@@ -27,9 +27,12 @@ import { appservice } from "./modules/appservice/appservice";
 import { stepinstance } from "./modules/stepinstance/stepInstanceService";
 import { linkedagent } from "./modules/linkedAgent/linkedAgentTools";
 import { businessService } from "./modules/service/businessService";
-import { procStep } from "./modules/processSteps/processSteps";
+import { processSteps } from "./modules/processSteps/processSteps";
+import { processDesign } from "./modules/processDesign/processDesign";
+import { processSpecification } from "./modules/processSpecification/processSpecification";
 import { bProcess } from "./modules/businessProcesses/businessProcesses";
 import { designtypes } from "./modules/designType/designType";
+import { informationObjects } from "./modules/informationObject/informationObject";
 
 /* import { progress } from "./modules/report/progress";
 import { daily } from "./modules/report/daily";
@@ -45,17 +48,19 @@ export default new Vuex.Store({
     tools,
     methods,
     documentation,
+    documentationType,
     agent,
     linkedagent,
     appservice,
     stepinstance,
-    bFunction,
     businessService,
-    documentationType,
-    procStep,
+    bFunction,
     bProcess,
+    processSteps,
+    processDesign,
+    processSpecification,
     designtypes,
-
+    informationObjects,
     /* 
     applications,
     methods,

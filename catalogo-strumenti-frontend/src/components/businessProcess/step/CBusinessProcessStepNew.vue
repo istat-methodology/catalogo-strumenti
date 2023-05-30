@@ -1,43 +1,47 @@
 <template>
   <div>
+    <!-- 
+        Aggiungi Passo dalla lista
+      -->
+    <COrigin :origins="[pFunctionName, pProcess.name]" />
     <CTitle
       title="Nuovo Passo"
-      buttonTitle=" nuovo passo"
-      functionality=""
+      :buttonTitle="' passo '"
+      functionality="NUOVO PASSO"
       :authenticated="isAuthenticated"
       :buttons="['salva', 'indietro']"
       @handleSubmit="handleSubmit"
-      @handleBack="enableBack"
+      @handleBack="handleBack"
     />
     <CCard>
       <CCardBody>
         <div class="row">
           <CInput
+            class="col-1"
+            label="id"
+            placeholder="id"
+            v-model="lProcessStep.id"
+            disabled
+          />
+          <CInput
             class="col-6"
             label="Nome*"
             placeholder="Nome"
-            v-model="bPStepLocal.name"
+            v-model="lProcessStep.name"
           />
           <CInput
-            class="col-4"
+            class="col-5"
             label="Etichetta"
             placeholder="Etichetta"
-            v-model="bPStepLocal.label"
-          />
-          <CInput
-            class="col-2"
-            label="Ordine"
-            type="number"
-            placeholder="Ordine"
-            v-model="bPStepLocal.orderCode"
+            v-model="lProcessStep.label"
           />
         </div>
-        <div class="row">
+        <div class="row mt-4">
           <CTextarea
-          class="col-12"
+            class="col-12"
             label="Descrizione"
             placeholder="Descrizione"
-            v-model="bPStepLocal.descr"
+            v-model="lProcessStep.descr"
           />
         </div>
       </CCardBody>
@@ -47,57 +51,54 @@
 <script>
 import { mapGetters } from "vuex";
 import CTitle from "@/components/CTitle.vue";
+import COrigin from "@/components/COrigin.vue";
+//var _ = require("lodash");
+
 export default {
   name: "CBusinessProcessStepNew",
   components: {
     CTitle,
+    COrigin,
   },
   data() {
     return {
-      bPStepLocalToSave: {
-        index: "",
+      processStepToSave: {
+        id: 0,
         name: "",
+        descr: "",
         label: "",
-        description: "",
+        businessServiceId: 999,
+        processIds: [],
+        substep: 0,
       },
-      bPStepLocal: {
-        index: "",
+      lProcessStep: {
+        id: 0,
         name: "",
+        descr: "",
         label: "",
-        description: "",
-        processDesign: [
-          {
-            id: "",
-            description: "",
-            name: "",
-            label: "",
-            processDesignDescription: {
-              id: "",
-              descr: "",
-            },
-            designType: {
-              id: "",
-              type: "",
-              parent: "",
-            },
-            informationObject: {
-              id: "",
-              name: "",
-              descr: "",
-              csmAppRoleId: "",
-            },
-          },
-        ],
+        businessServiceId: 999,
+        processIds: [],
+        substep: 0,
       },
+
+      FormState: {
+        STEP_ADD: 21,
+        STEP_NEW: 22,
+      },
+      stateform: 21,
     };
   },
   computed: {
     ...mapGetters("auth", ["isAuthenticated"]),
+    ...mapGetters("bProcess", ["bProcess"]),
   },
-  emits: ["enableEditStep"],
-
   props: {
-    bPStep: {
+    pFunctionName: {
+      type: String,
+      required: false,
+      default: () => "",
+    },
+    pProcess: {
       type: Object,
       required: true,
       default: () => {},
@@ -105,21 +106,26 @@ export default {
   },
   methods: {
     handleSubmit() {
-      //alert("funzione di update process step non attiva!");
-      //console.log("funzione di update process step non attiva!");
-      this.bPStepLocalToSave.id = this.bPStepLocal.id;
-      this.bPStepLocalToSave.index = this.bPStepLocal.index;
-      this.bPStepLocalToSave.name = this.bPStepLocal.name;
-      this.bPStepLocalToSave.label = this.bPStepLocal.label;
-      this.bPStepLocalToSave.description = this.bPStepLocal.description;
-
-      this.$store.dispatch("procStep/save", this.bPStepLocalToSave); //.then(() => {  alert(this.bPStepLocal())});
+      this.processStepToSave.id = this.lProcessStep.id;
+      this.processStepToSave.name = this.lProcessStep.name;
+      this.processStepToSave.label = this.lProcessStep.label;
+      this.processStepToSave.descr = this.lProcessStep.descr;
+      this.processStepToSave.businessServiceId = this.lProcessStep.businessServiceId;
+      this.processStepToSave.processIds.push(this.pProcess.id);
+      this.processStepToSave.substep = this.lProcessStep.substep;
+      this.$store
+        .dispatch("processSteps/save", this.processStepToSave)
+        .then(() => {      
+          this.$emit("enableBack");    
+        });
     },
-    enableBack() {
-      this.$emit("enableBack");
+    handleBack() {
+      this.$emit("enableAddStep");
     },
   },
-  created() {},
+  created() {
+    this.lProcess = this.pProcess;
+  },
 };
 </script>
 <style scoped>

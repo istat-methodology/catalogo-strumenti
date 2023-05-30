@@ -120,7 +120,7 @@ export default {
     businessServiceService: {
       type: Object,
       required: true,
-      default: () => []
+      default: () => {}
     }
   },
   data() {

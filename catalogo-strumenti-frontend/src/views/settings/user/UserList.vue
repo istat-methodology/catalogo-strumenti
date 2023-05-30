@@ -1,10 +1,8 @@
 <template>
   <div class="row">
     <div class="col-sm-12 col-md-12">
-      <div class="card ">
-        <header class="card-header">
-          Users
-        </header>
+      <div class="card">
+        <header class="card-header">Users</header>
         <div class="card-body">
           <CDataTable
             :items="users"
@@ -17,7 +15,7 @@
             sorter
             pagination
           >
-            <template #show_update="{item}">
+            <template #show_update="{ item }">
               <td class="py-2">
                 <CButton
                   color="outline-dark"
@@ -28,7 +26,7 @@
                 >
               </td>
             </template>
-            <template #show_passchange="{item}">
+            <template #show_passchange="{ item }">
               <td class="py-4">
                 <CButton
                   color="outline-dark"
@@ -39,7 +37,7 @@
                 >
               </td>
             </template>
-            <template #show_delete="{item}">
+            <template #show_delete="{ item }">
               <td class="py-2">
                 <CButton
                   color="outline-dark"

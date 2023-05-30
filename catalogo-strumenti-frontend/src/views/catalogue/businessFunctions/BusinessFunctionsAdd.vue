@@ -13,14 +13,15 @@
             @handleSubmit="handleSubmit"
             @handleBack="handleBack"
           />
-
           <CCard>
             <CCardBody>
               <CInput
                 label="Nome*"
                 placeholder="Nome"
                 v-model="businessFunctionLocal.name"
-                :class="{ 'is-invalid': $v.businessFunctionLocal.name.$error }"
+                :class="{
+                  'is-invalid': $v.businessFunctionLocal.name.$error
+                }"
               />
               <div
                 class="help-block"

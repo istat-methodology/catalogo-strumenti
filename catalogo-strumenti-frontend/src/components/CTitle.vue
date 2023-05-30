@@ -1,15 +1,26 @@
 <template>
   <div>
-    <CCardHeader class="no-border p-0 mt-4">
-      <h1 class="uppercase text-right p-0 text-info" v-if="functionality != ''">
-        <span>
-          <span class="p-0">{{ maintitle }}</span>
-          <h4 class="bg-secondary p-0 text-right uppercase ">
-            <span class="mt-4 pr-1 uppercase text-info">
-              {{ functionality }}
+    <div class="row p-0">
+      <div class="col-md-12 p-0 pl-2 pr-2">        
+          <h3 class="text-right text-info">
+            <span>
+              <div v-for="(subitem,index) of origins" v-bind:key=index class="row">
+                <li >
+                  {{ subitem }}
+                </li>
+              </div>
             </span>
-          </h4>
-        </span>
+          </h3>
+      </div>
+    </div>
+    <CCardHeader class="no-border p-0">
+      <h1 class="uppercase text-right p-0 text-info" v-if="functionality != ''">
+        <h4 class="text-right uppercase p-0">
+          <span class="uppercase text-info pr-1 p-0 mt-1 mb-0">
+            {{ functionality }}
+          </span>
+        </h4>       
+        <hr class="bg-info mt-0" />
       </h1>
       <h2 class="text-info">
         {{ title }}
@@ -69,11 +80,6 @@ export default {
       Type: String,
       default: () => ""
     },
-    maintitle: {
-      Type: String,
-      default: () => ""
-    },
-
     title: {
       Type: String,
       default: () => ""
@@ -93,7 +99,12 @@ export default {
     authenticated: {
       Type: Boolean,
       default: () => false
-    }
+    },
+    origins: {
+      Type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   methods: {
     getTitle(functionType, buttonTitle) {
