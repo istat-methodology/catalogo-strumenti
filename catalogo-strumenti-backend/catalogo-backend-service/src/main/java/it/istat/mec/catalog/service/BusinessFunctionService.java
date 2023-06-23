@@ -118,7 +118,7 @@ public class BusinessFunctionService {
 		return Translators.translate(bs);
 	}
 
-	public Boolean deleteBusinessFunction(Integer id) throws JpaSystemException{
+	public Boolean deleteBusinessFunction(Integer id){
 		if (!businessFunctionDao.findById(id).isPresent())
 			throw new NoDataException("BusinessFunction not present");
 		BusinessFunction bs = businessFunctionDao.findById(id).get();
